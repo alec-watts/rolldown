@@ -16,6 +16,9 @@ pub enum InvalidImportAttributeKind {
   DynamicImportAttribute,
   /// The legacy `assert` keyword, which `with` replaced.
   Assert,
+  /// The attributes of a static import of an external module, which only reach the output with
+  /// `experimental.importAttributes`.
+  ExternalWithoutOption,
 }
 
 #[derive(Debug)]
@@ -47,6 +50,9 @@ impl BuildEvent for InvalidImportAttribute {
       InvalidImportAttributeKind::Assert => format!(
         "The legacy `assert` keyword in \"{module_id}\" is not supported, so its attributes are ignored. Use `with` instead."
       ),
+      InvalidImportAttributeKind::ExternalWithoutOption => format!(
+        "The import attributes of an external import in \"{module_id}\" are dropped, because `experimental.importAttributes` is off. Enable it to keep them in the output."
+      ),
     }
   }
 
@@ -56,6 +62,9 @@ impl BuildEvent for InvalidImportAttribute {
       InvalidImportAttributeKind::DynamicImportOptions => "not statically analyzable",
       InvalidImportAttributeKind::DynamicImportAttribute => "not a string key and value",
       InvalidImportAttributeKind::Assert => "replace `assert` with `with`",
+      InvalidImportAttributeKind::ExternalWithoutOption => {
+        "dropped without `experimental.importAttributes`"
+      }
     };
     diagnostic.add_label(&file_id, self.span.start..self.span.end, label.to_string());
   }

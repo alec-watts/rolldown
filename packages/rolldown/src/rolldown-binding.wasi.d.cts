@@ -1816,7 +1816,8 @@ export declare class BindingOutputChunk {
 }
 
 export declare class BindingPluginContext {
-  load(specifier: string, sideEffects: boolean | 'no-treeshake' | undefined, packageJsonPath?: string): Promise<void>
+  /** Loads `rawId` imported with `attributes`. */
+  load(rawId: string, attributes: Record<string, string>, sideEffects: boolean | 'no-treeshake' | undefined, packageJsonPath?: string): Promise<void>
   resolve(specifier: string, importer?: string | undefined | null, extraOptions?: BindingPluginContextResolveOptions | undefined | null): Promise<BindingPluginContextResolvedId | null>
   emitFile(file: BindingEmittedAsset, assetFilename?: string | undefined | null, fnSanitizedFileName?: string | undefined | null): string
   emitChunk(file: BindingEmittedChunk): string
@@ -2729,7 +2730,9 @@ export interface BindingOverwriteOptions {
 }
 
 export interface BindingPluginContextResolvedId {
+  /** The resolved id without its import attributes. */
   id: string
+  attributes: Record<string, string>
   packageJsonPath?: string
   external: boolean | 'absolute' | 'relative'
   moduleSideEffects?: boolean | 'no-treeshake'
@@ -2750,6 +2753,7 @@ export interface BindingPluginContextResolveOptions {
   skipSelf?: boolean
   custom?: number
   vitePluginCustom?: BindingVitePluginCustom
+  attributes?: Record<string, string>
 }
 
 export interface BindingPluginHookMeta {
